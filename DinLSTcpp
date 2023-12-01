@@ -1,0 +1,68 @@
+#include <iostream>
+#include <fstream>
+#include "DinLst.h"
+#include <windows.h>
+
+using namespace std;
+
+void LoadDataFromFile(const char* filename, List* lst) {
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cout << "Error opening file." << endl;
+        return;
+    }
+
+    string line;
+    while (getline(file, line)) {
+        AddTail(lst, const_cast<char*>(line.c_str()));
+    }
+    file.close();
+}
+
+
+/*void MoveToHead(List* lst, int id) {
+    Itm* cur = lst->bg;
+    while (cur) {
+        if (cur->id == id) {
+            if (cur->prev) {
+                cur->prev->next = cur->next;
+            }
+            if (cur->next) {
+                cur->next->prev = cur->prev;
+            }
+            cur->prev = NULL;
+            cur->next = lst->bg;
+            lst->bg->prev = cur;
+            lst->bg = cur;
+            break;
+        }
+        cur = cur->next;
+    }
+}
+*/
+int GetListSize(List* lst) {
+    int count = 0;
+    Itm* cur = lst->bg;
+    while (cur) {
+        count++;
+        cur = cur->next;
+    }
+    return count;
+}
+
+int main() {
+    SetConsoleOutputCP(1251);
+    SetConsoleCP(1251);
+    List* myList = CreateList("My List", "First Element");
+    LoadDataFromFile("input.txt", myList);
+    ViewLst(myList);
+
+    cout << "\n Перестановка элемента с id = 2 в начало списка" << endl;
+    MoveToHead(myList, 2);
+    ViewLst(myList);
+
+    cout << "\n Количество элементов в списке: " << GetListSize(myList) << endl;
+
+    DelLst(myList);
+    return 0;
+}
